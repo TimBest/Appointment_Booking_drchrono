@@ -1,9 +1,8 @@
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 
+from accounts.forms import PatientForm
 from utilities.views import MultipleModelFormsView
-from greetings.forms import HappyBirthdayForm
 
 
 def logout(request):
@@ -11,15 +10,25 @@ def logout(request):
     auth_logout(request)
     return redirect('/')
 
-class ProfileView(MultipleModelFormsView):
-    form_classes = {'HappyBirthdayForm' : HappyBirthdayForm,}
+class HomeView(MultipleModelFormsView):
+    form_classes = {'PatientForm' : PatientForm,}
     happybirthday_id=None
-    template_name='accounts/profile.html'
-    success_url = 'profile'
+    template_name='index.html'
+    success_url = 'home'
 
     def get_objects(self, queryset=None):
-        from greetings.notifications import send_happy_birthdays
-        send_happy_birthdays()
-        return {'HappyBirthdayForm' : self.request.user.happy_birthday,}
+        user = None
+        if self.request.user.is_authenticated():
+            user = self.request.user.patient
+        return {'PatientForm' : user,}
 
-profile = login_required(ProfileView.as_view())
+    def forms_valid(self, forms):
+        for key, form in forms.iteritems():
+            if self.request.user.is_authenticated():
+                form.save()
+            else:
+                pass
+                # TODO redirect to signup
+        return self.get_success_url()
+
+home = HomeView.as_view()

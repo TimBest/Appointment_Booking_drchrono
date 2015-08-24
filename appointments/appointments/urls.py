@@ -21,13 +21,13 @@ urlpatterns = patterns('',
     url('', include('social.apps.django_app.urls', namespace='social')),
 )
 
-urlpatterns += patterns('utilities.views',
-    url(r'^$', 'load_template', {'template_name': 'index.html'}, name='home'),
+urlpatterns += patterns('accounts.views',
+    url(r'^$', 'home', name='home'),
 )
 
-"""urlpatterns += patterns('',
+urlpatterns += patterns('',
     url(r'', include('accounts.urls')),
-)"""
+)
 
 if settings.DEVELOPMENT:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

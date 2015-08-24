@@ -38,13 +38,14 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'accounts',
+    'autocomplete_light',
     'jinja2',
     'pipeline',
     'social.apps.django_app.default',
     'robots',
     #'test_without_migrations',
 
+    'accounts',
     'drchronoAPI',
     'pipeline_jinja2',
     'social_auth_drchrono',
