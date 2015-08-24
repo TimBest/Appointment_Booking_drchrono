@@ -1,0 +1,9 @@
+*~
+*.swp
+*.pyc
+*.pyo
+
+*appointments/appointments/media/
+*appointments/appointments/staticfiles/
+
+.elasticbeanstalk/
