@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'accounts',
     'jinja2',
     'pipeline',
     'social.apps.django_app.default',
