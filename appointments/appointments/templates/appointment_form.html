@@ -42,9 +42,17 @@
       <div class="row">
         <div class="medium-12 columns">
           <hr/>
-          <h4>Step 2 | Doctor/Office</h4>
+          <h4>Step 2 | Select Doctor or Office</h4>
+          <div class="row">
+            <div class="medium-6 columns">
+              {{ forms.field(DoctorOrOfficeForm.doctor) }}
+            </div>
+            <div class="medium-6 columns">
+              {{ forms.field(DoctorOrOfficeForm.office) }}
+            </div>
+          </div>
           <hr/>
-          <h4>Step 3 | Book Appointment by...</h4>
+          <h4>Step 3 | Schedule a Day & Time</h4>
           {# TODO: find a better title #}
           <input type="hidden" name="next" value="{{ next }}"/>
           <div>
@@ -55,5 +63,5 @@
           <p><b>Fees:</b> Orthology accepts all major insurance plans for physical therapy services. Our patent-pending, research-based methodology utilizes multiple practitioners working together as a collaborative care team. The chiropractic portion, which is an integral part of the visit and supportive of our physical therapy services, is $30.</p>
         </div>
       </div>
-    </form>
+</form>
 {% endblock %}

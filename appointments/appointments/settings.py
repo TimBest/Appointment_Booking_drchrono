@@ -226,7 +226,6 @@ ROBOTS_SITEMAP_URLS = [
 ]
 
 try:
-    #from accounts.settings import *
-    pass
+    from accounts.settings import *
 except ImportError:
     pass

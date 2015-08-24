@@ -13,7 +13,11 @@
       <div class="large-3 medium-4 columns">
         <div class="card">
           <div class="card-divider">
-            <a href={{ url('appointment_form', kwargs={'practice_id':practice.id}) }}{{ practice.user.username }}</a>
+            <h3>
+              <a href={{ url('appointment_form', kwargs={'practice_id':practice.pk}) }} class="body-font-color">
+                {{ practice.user.username }}
+              </a>
+            </h3>
           </div>
           <div class="card-section">
             <p>Practice information goes here.</p>

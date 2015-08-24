@@ -1,10 +1,56 @@
 import datetime
 
-from drchronoAPI.api import get_patients, get_doctors
-from drchronoAPI.models import Patient, Doctor
-from timezones.models import State
-from utilities.functions import get_object_or_None
+from drchronoAPI.api import get_doctors, get_offices, get_patients
+from drchronoAPI.models import Doctor, Office, Patient
 
+
+# TODO make these generic
+def update_doctors_for_user(user):
+    parameters = {}
+    doctors = get_doctors(user, parameters)
+    for d in doctors:
+        doctor, created = Doctor.objects.update_or_create(
+            id=d['id'],
+            defaults= {
+                'user': user,
+                'first_name': d['first_name'],
+                'last_name': d['last_name'],
+                'suffix': d['suffix'],
+                'job_title': d['job_title'],
+                'specialty': d['specialty'],
+                'cell_phone': d['cell_phone'],
+                'home_phone': d['home_phone'],
+                'office_phone': d['office_phone'],
+                'email': d['email'],
+                'website': d['website'],
+            },
+        )
+
+def update_offices_for_user(user):
+    parameters = {}
+    offices = get_offices(user, parameters)
+    for o in offices:
+        office, created = Office.objects.update_or_create(
+            id=o['id'],
+            defaults= {
+                'user': user,
+                'online_scheduling': o['online_scheduling'],
+                'online_timeslots': o.get('online_timeslots',''),
+                'address': o['address'],
+                'city': o['city'],
+                'country': o['country'],
+                'name': o['name'],
+                'state': o['state'],
+                'zip_code': o['zip_code'],
+                'doctor': o['doctor'],
+                'end_time': o['end_time'],
+                'phone_number': o['phone_number'],
+                'start_time': o['start_time'],
+                # TODO: add exam room model
+                #'exam_rooms': o['exam_rooms'],
+                'id': o['id'],
+            },
+        )
 
 def update_patients_for_user(user, last_ran=None):
     parameters = {}
@@ -26,28 +72,6 @@ def update_patients_for_user(user, last_ran=None):
                     'last_name': p['last_name'],
                     'cell_phone': p['cell_phone'],
                     'email': p['email'],
-                    #'state': p['state'],
-                    'state': get_object_or_None(State, state=p['state']),
+                    'state': p['state'],
                 },
             )
-
-def update_doctors_for_user(user):
-    parameters = {}
-    doctors = get_doctors(user, parameters)
-    for d in doctors:
-        doctor, created = Doctor.objects.update_or_create(
-            id=d['id'],
-            defaults= {
-                'user': user,
-                'first_name': d['first_name'],
-                'last_name': d['last_name'],
-                'suffix': d['suffix'],
-                'job_title': d['job_title'],
-                'specialty': d['specialty'],
-                'cell_phone': d['cell_phone'],
-                'home_phone': d['home_phone'],
-                'office_phone': d['office_phone'],
-                'email': d['email'],
-                'website': d['website'],
-            },
-        )
