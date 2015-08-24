@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% import "utils/forms.html" as forms %}
+
+{% block title %}Book Your Next Appointment{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="large-12 columns">
+      <h2>Appointments</h2>
+    </div>
+  </div>
+    <form id="AppointmentForm" method="post" action="{{ request.path }}" class="notificationForm">
+      <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      <div class="row">
+        <div class="medium-12 columns">
+          <h4>Step 1 | Contact Information</h4>
+          <p>or <a href="{{ url('home') }}">Login</a></p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-6 columns">
+          {{ forms.field(PatientForm.first_name) }}
+        </div>
+        <div class="medium-6 columns">
+          {{ forms.field(PatientForm.last_name) }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-6 columns">
+          {{ forms.field(PatientForm.email) }}
+        </div>
+        <div class="medium-6 columns">
+          {{ forms.field(PatientForm.cell_phone) }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-12 columns">
+          {{ forms.field(PatientForm.date_of_birth) }}
+          {{ forms.field(PatientForm.gender) }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="medium-12 columns">
+          <hr/>
+          <h4>Step 2 | Doctor/Office</h4>
+          <hr/>
+          <h4>Step 3 | Book Appointment by...</h4>
+          {# TODO: find a better title #}
+          <input type="hidden" name="next" value="{{ next }}"/>
+          <div>
+            <button type="submit" class="button radius">Book Appointment</button>
+          </div>
+          <hr/>
+          <p><b>Cancellation Policy:</b> If you are unable to keep your appointment, we ask that you cancel with at least 24 hours' notice.</p>
+          <p><b>Fees:</b> Orthology accepts all major insurance plans for physical therapy services. Our patent-pending, research-based methodology utilizes multiple practitioners working together as a collaborative care team. The chiropractic portion, which is an integral part of the visit and supportive of our physical therapy services, is $30.</p>
+        </div>
+      </div>
+    </form>
+{% endblock %}
