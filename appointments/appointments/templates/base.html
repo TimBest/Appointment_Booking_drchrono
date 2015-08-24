@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#2161A8">
+    {% block meta %}{% endblock %}
+    <title>{% block title %}Book Your Next Appointment{% endblock %} | drchrono</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ static('images/favicon.png') }}?v=4">
+    {% if is_development %}
+      {% stylesheet 'sass' %}
+    {% else %}
+      <link rel="stylesheet" href="{{ static('stylesheets/style.min.css') }}" >
+    {% endif %}
+    <script src="{{ static('scripts/includes/modernizr.js') }}"></script>
+
+    {% javascript 'scripts' %}
+  </head>
+  <body>
+    <header>
+      <div class="row">
+        <div class="medium-12 columns">
+          <h1><a class="text-black" href="{{ url('home') }}" >Appointments</a></h1>
+        </div>
+      </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <footer class="row">
+      <hr/>
+      <div class="medium-12 columns">
+        <ul class="inline-list">
+        <li>
+          <span>
+            <a href="https://github.com/TimothyBest/Appointment_Booking_drchrono">Appointment Booking drchrono</a>
+            <span> is maintained by </span>
+            <a href="http://www.timbest.net">TimothyBest</a>.
+          </span>
+        </li>
+      </ul>
+      </div>
+    </footer>
+
+  </body>
+</html>

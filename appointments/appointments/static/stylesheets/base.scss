@@ -1,0 +1,94 @@
+@import 'includes/foundation/components/global';
+@import 'includes/foundation/components/card';
+
+
+/* HEADER */
+
+$header-color: $white;
+$header-color-dark: $silver;
+
+
+/* HEADER */
+header {
+  background-color: $primary-color;
+  color: $header-color;
+  margin-bottom: 20px;
+  a, h1, h2, h3, h4, h5, h6 {
+    color: $header-color;
+  }
+  a:hover {
+    color: $header-color-dark;
+    text-decoration: none;
+  }
+
+  .global-nav-right {
+    .tabs {
+      dd, .tab-title {
+        > a {
+          color: $header-color;
+          a:hover {
+            text-decoration: none;
+          }
+        }
+        &.active a {
+          color: $header-color-dark;
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 40em) {
+  header {
+    height: 100px;
+    position: relative;
+    .global-nav-right {
+      position: absolute;
+      bottom: -70px;
+      left: -17px;
+      .tabs {
+        height:55px;
+        width: 328px;
+        .tab-title {
+          a {
+            font-weight:normal;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 40.063em) {
+  header {
+    .global-nav-right {
+      position: absolute;
+      bottom: 16px;
+      right: 0px;
+    }
+  }
+}
+
+
+/* FOOTER */
+
+
+/* HELLPERS */
+.body-font-color {
+  color: $body-font-color;
+  &:hover, &:active {
+    color: $black;
+  }
+}
+
+.button {
+  &:hover, &:active {
+    text-decoration: none;
+  }
+}
+
+.card {
+  .card-navigation {
+    padding: $card-padding;
+    padding-top: 0px;
+  }
+}

@@ -1,0 +1,48 @@
+// Foundation by ZURB
+// foundation.zurb.com
+// Licensed under MIT Open Source
+
+@import '../components/global';
+@import '../components/grid';
+
+//
+// @variables
+//
+
+
+$tabs-navigation-padding: rem-calc(16) !default;
+$tabs-navigation-bg-color: transparent !default;
+$tabs-navigation-hover-bg-color: rgba(0,0,0, 0.1) !default;
+$tabs-navigation-active-font-color: $white !default;
+$tabs-navigation-font-color: darken($tabs-navigation-active-font-color, 14%) !default;
+$tabs-navigation-font-size: rem-calc(16) !default;
+$tabs-navigation-font-family: $body-font-family !default;
+
+
+@include exports("tab") {
+  .tabs {
+    dd,
+    .tab-title {
+      float: $default-float;
+      list-style: none;
+      margin-bottom: 0 !important;
+      position: relative;
+      > a {
+        display: block;
+        background-color: $tabs-navigation-bg-color;
+        color: $tabs-navigation-font-color;
+        font-family: $tabs-navigation-font-family;
+        font-size: $tabs-navigation-font-size;
+        text-transform: uppercase;
+        padding: $tabs-navigation-padding $tabs-navigation-padding * 2;
+        &:hover {
+          background-color: $tabs-navigation-hover-bg-color;
+        }
+        &.radius { @include radius($global-radius); }
+      }
+      &.active a {
+        color: $tabs-navigation-active-font-color;
+      }
+    }
+  }
+}

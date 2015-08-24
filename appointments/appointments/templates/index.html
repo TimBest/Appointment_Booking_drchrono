@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% import "utils/forms.html" as forms %}
+
+{% block title %}Book Your Next Appointment{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="large-12 columns">
+      <h3>Appointments:</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="large-12 columns">
+      <form id="AppointmentForm" method="post" action="{{ request.path }}" class="notificationForm">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <div class="card">
+          <div class="card-divider">
+            <h4>Form Title</h4>
+          </div>
+          <div class="card-section">
+            <p>The Appointment Form Goes Here.</p>
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <div>
+              <button type="submit" class="button">Save</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

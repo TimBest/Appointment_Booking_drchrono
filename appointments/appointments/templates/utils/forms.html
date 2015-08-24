@@ -1,0 +1,67 @@
+
+{% macro alert(content, type=None, alert_header=None, close_button=True) -%}
+  {# type can be success, error (or danger), info. Defaults to a warning style. #}
+  <div class="alert
+    {%- if alert_header %} alert-block{% endif -%}
+    {%- if type %} alert-{{ type }}{% endif -%}
+    {%- if close_button %} fade in{% endif %}">
+    {% if close_button -%}
+      <a class="close" data-dismiss="alert">&times;</a>
+    {%- endif %}
+    {% if alert_header -%}
+      <h4 class="alert-heading">{{ alert_header|safe }}</h4>
+    {%- endif %}
+    {{ content|safe }}
+  </div>
+{%- endmacro %}
+
+{% macro non_field_errors(form) %}
+  {% if form.non_field_errors %}
+    {% for error in form.non_field_errors() %}
+      <div data-alert class="alert-box success radius">
+        {{ error }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endmacro %}
+
+{% macro switch(field, class=None, hide_label=False) -%}
+  {% if field.is_hidden %}
+    {{ field|safe }}
+  {% else %}
+      <div class="switch radius{% if field.errors %} has-error{% endif -%}{%- if class %} {{ class }}{% endif %}" tabindex="0">
+        {{ field }}
+        {% if not hide_label %}<label for="{{ field.auto_id|safe }}">{{ field.label|safe }}</label>{% endif %}
+        {% if field.errors %}
+          <span class="help-block">{{ field.errors|join(' ')|safe }}</span>
+        {% endif %}
+      </div>
+      {% if field.help_text %}
+        <p class="help-block">{{ field.help_text|safe }}</p>
+      {% endif %}
+  {% endif %}
+{%- endmacro %}
+
+{% macro field(field, class=None, hide_label=False) -%}
+  {% if field.is_hidden %}
+    {{ field|safe }}
+  {% else %}
+      <div class="{% if field.errors %} has-error{% endif -%}{%- if class %} {{ class }}{% endif %}">
+        {% if not hide_label %}<label for="{{ field.auto_id|safe }}">{{ field.label|safe }}</label>{% endif %}
+        {{ field }}
+        {% if field.errors %}
+          <span class="help-block">{{ field.errors|join(' ')|safe }}</span>
+        {% endif %}
+      </div>
+      {% if field.help_text %}
+        <p class="help-block">{{ field.help_text|safe }}</p>
+      {% endif %}
+  {% endif %}
+{%- endmacro %}
+
+{% macro form(form) -%}
+  {{ non_field_errors(form) }}
+  {% for f in form %}
+    {{ field(f) }}
+  {% endfor %}
+{%- endmacro %}
