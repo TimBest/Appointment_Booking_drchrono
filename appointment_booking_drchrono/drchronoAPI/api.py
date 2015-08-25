@@ -48,22 +48,24 @@ def activate_online_scheduling(user, office):
     return None
 
 """ POST """
-def add_appointment(user, doctor, patient, office, scheduled_time):
+def add_appointment(user, doctor, patient, office, scheduled_time, exam_room):
     social = user.social_auth.get(user=user)
     access_token = social.extra_data['access_token']
     headers = {'Authorization': 'Bearer {0}'.format(access_token)}
 
     data = {
-        'doctor': doctor,
+        'doctor': int(doctor),
         'duration': 30, # in minutes
-        'office': office,
+        'office': int(office),
+        'exam_room': exam_room,
         'patient': patient,
-        'scheduled_time': scheduled_time,
+        'scheduled_time': "%sT%s" % (scheduled_time.date(), scheduled_time.time()),
     }
     url = API_URL + 'appointments'
 
-    r = requests.post(url, data=data, headers=headers)
 
+    r = requests.post(url, data=data, headers=headers)
+    print r
     assert r.status_code == 201 # HTTP 201 CREATED
     return None
 
@@ -78,10 +80,8 @@ def add_patient(user, doctor, date_of_birth, gender, data={}):
         'gender': gender,
     })
     url = API_URL + 'patients'
-    print url
-    print data
-    print headers
+
     r = requests.post(url, data=data, headers=headers)
-    print r
+
     assert r.status_code == 201 # HTTP 201 CREATED
     return None

@@ -78,7 +78,11 @@ class AppointmentFormView(MultipleModelFormsView):
     def forms_valid(self, forms):
         patient_form = forms['PatientForm'].save(commit=False)
         doctor_office = forms['DoctorOrOfficeForm'].cleaned_data
+        # remove ScheduleForm and just use time_slots from post
         schedule = forms['ScheduleForm'].cleaned_data
+
+        doctor = doctor_office['doctor']
+        office = doctor_office['office']
 
         # search for user
         patient = get_patients(self.practice.user, parameters={
@@ -89,29 +93,35 @@ class AppointmentFormView(MultipleModelFormsView):
         })
 
         if len(patient) == 0:
-
             add_patient(
-                self.practice.user, doctor=doctor_office['doctor'],
+                self.practice.user, doctor=doctor,
                 date_of_birth=patient_form.date_of_birth,
                 gender=patient_form.gender, data={
-                    #'first_name':patient_form.first_name,
-                    #'last_name':patient_form.last_name,
-                    #'cell_phone':patient_form.cell_phone,
-                    #'email':patient_form.email,
+                    'first_name':patient_form.first_name,
+                    'last_name':patient_form.last_name,
+                    'cell_phone':patient_form.cell_phone,
+                    'email':patient_form.email,
                 })
-        else:
-            # TODO: handle duplicate uasers
-            # add user here
-            pass
+            patient = get_patients(self.practice.user, parameters={
+                'date_of_birth':patient_form.date_of_birth,
+                'first_name':patient_form.first_name,
+                'last_name':patient_form.last_name,
+                'gender':patient_form.gender,
+            })
 
-        #add_appointment(self.practice, doctor, patient, office, scheduled_time)
+        # TODO: handle multiple users in some way
+        patient = patient[0]
+        print patient['id']
+        # Exam room set to 0 since I do not have any in my office object
+        add_appointment(self.practice.user, doctor, patient['id'], office, schedule['appointment_date'], exam_room=0)
 
         try:
-            self.request.user.patient = patient
+            patient_form.id = patient['id']
+            self.request.user.patient = patient_form
             self.request.user.patient.save()
         except:
             # TODO: pass uasers id with this
-            return HttpResponseRedirect("%s?%s" % ((reverse('signup')), urllib.urlencode(patient_form.cleaned_data)))
+            return HttpResponseRedirect("%s?%s" % ((reverse('signup')), urllib.urlencode(patient)))
 
         return self.get_success_url()
 
