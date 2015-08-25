@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     #'test_without_migrations',
 
     'accounts',
+    'appointments',
     'drchronoAPI',
     'pipeline_jinja2',
     'social_auth_drchrono',

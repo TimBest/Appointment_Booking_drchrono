@@ -22,12 +22,13 @@ urlpatterns = patterns('',
     url('', include('social.apps.django_app.urls', namespace='social')),
 )
 
-urlpatterns += patterns('accounts.views',
+urlpatterns += patterns('appointment_booking_drchrono.views',
     url(r'^$', 'home', name='home'),
 )
 
 urlpatterns += patterns('',
     url(r'', include('accounts.urls')),
+    url(r'', include('appointments.urls')),
 )
 
 if settings.DEVELOPMENT:
