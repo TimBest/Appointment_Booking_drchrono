@@ -1,3 +1,8 @@
+$("input[name='time_slots']").change(function(){
+  $("#id_appointment_date").val($(this).val());
+});
+
+
 /*$(".rotate_table").each(function() {
     var table = $(this);
     var newrows = [];

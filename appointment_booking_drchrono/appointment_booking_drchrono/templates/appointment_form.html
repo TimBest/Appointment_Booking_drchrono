@@ -38,7 +38,7 @@
       <h4>Step 2 | Schedule Appointment</h4>
       {{ forms.field(DoctorOrOfficeForm.doctor) }}
       {{ forms.field(DoctorOrOfficeForm.office) }}
-      {{ forms.field(ScheduleForm.appointment_date) }}
+      {{ forms.field(ScheduleForm.appointment_date, "hide") }}
 
 
       <table class="rotate_table">
@@ -47,7 +47,7 @@
           <th>{{ current_date|date("l N j") }}</th>
           {% for time_slot in time_slots %}
           <td>
-            <input type="radio" name="time_slots" value="{{ time_slot }}" id="{{ current_date }}_{{ time_slot }}">
+            <input type="radio" name="time_slots" value="{{ current_date }}T{{ time_slot }}" id="{{ current_date }}_{{ time_slot }}">
               <label for="{{ current_date }}_{{ time_slot }}">{{ time_slot|date("h:iA") }}
             </label>
           </td>

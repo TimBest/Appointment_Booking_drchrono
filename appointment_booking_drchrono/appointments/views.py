@@ -9,7 +9,7 @@ import urllib
 from accounts.forms import PatientForm
 from accounts.models import Practice
 from appointments.forms import DoctorOrOfficeForm, ScheduleForm
-from drchronoAPI.api import add_appointment, get_appointments
+from drchronoAPI.api import add_appointment, add_patient, get_appointments, get_patients
 from utilities.views import MultipleModelFormsView
 
 
@@ -28,6 +28,7 @@ class AppointmentFormView(MultipleModelFormsView):
         return super(AppointmentFormView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
+        # TODO: fix this entire mess
         context = super(AppointmentFormView, self).get_context_data(**kwargs)
         number_of_days = 7
         today = datetime.date(year=2015, month=8, day=11) #datetime.date.today()
@@ -61,9 +62,6 @@ class AppointmentFormView(MultipleModelFormsView):
                     available_appointments[scheduled_time.date()].remove((scheduled_time + datetime.timedelta(minutes=half_hour)).time())
                 except:
                     pass
-                    # print scheduled_time.date()
-                    # print (scheduled_time + datetime.timedelta(minutes=half_hour)).time()
-                    # print available_appointments[scheduled_time.date()]"""
         context['available_appointments'] = available_appointments
         return context
 
@@ -78,8 +76,33 @@ class AppointmentFormView(MultipleModelFormsView):
         }
 
     def forms_valid(self, forms):
-        patient = forms['PatientForm']
-        doctor_office = forms['DoctorOrOfficeForm']
+        patient_form = forms['PatientForm'].save(commit=False)
+        doctor_office = forms['DoctorOrOfficeForm'].cleaned_data
+        schedule = forms['ScheduleForm'].cleaned_data
+
+        # search for user
+        patient = get_patients(self.practice.user, parameters={
+            'date_of_birth':patient_form.date_of_birth,
+            'first_name':patient_form.first_name,
+            'last_name':patient_form.last_name,
+            'gender':patient_form.gender,
+        })
+
+        if len(patient) == 0:
+
+            add_patient(
+                self.practice.user, doctor=doctor_office['doctor'],
+                date_of_birth=patient_form.date_of_birth,
+                gender=patient_form.gender, data={
+                    #'first_name':patient_form.first_name,
+                    #'last_name':patient_form.last_name,
+                    #'cell_phone':patient_form.cell_phone,
+                    #'email':patient_form.email,
+                })
+        else:
+            # TODO: handle duplicate uasers
+            # add user here
+            pass
 
         #add_appointment(self.practice, doctor, patient, office, scheduled_time)
 
@@ -87,7 +110,8 @@ class AppointmentFormView(MultipleModelFormsView):
             self.request.user.patient = patient
             self.request.user.patient.save()
         except:
-            return HttpResponseRedirect("%s?%s" % ((reverse('signup')), urllib.urlencode(patient.cleaned_data)))
+            # TODO: pass uasers id with this
+            return HttpResponseRedirect("%s?%s" % ((reverse('signup')), urllib.urlencode(patient_form.cleaned_data)))
 
         return self.get_success_url()
 

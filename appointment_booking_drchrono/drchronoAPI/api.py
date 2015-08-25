@@ -66,3 +66,22 @@ def add_appointment(user, doctor, patient, office, scheduled_time):
 
     assert r.status_code == 201 # HTTP 201 CREATED
     return None
+
+def add_patient(user, doctor, date_of_birth, gender, data={}):
+    social = user.social_auth.get(user=user)
+    access_token = social.extra_data['access_token']
+    headers = {'Authorization': 'Bearer {0}'.format(access_token)}
+
+    data.update({
+        'doctor': doctor,
+        'date_of_birth': str(date_of_birth),
+        'gender': gender,
+    })
+    url = API_URL + 'patients'
+    print url
+    print data
+    print headers
+    r = requests.post(url, data=data, headers=headers)
+    print r
+    assert r.status_code == 201 # HTTP 201 CREATED
+    return None

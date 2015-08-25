@@ -17,5 +17,8 @@ class LoginForm(forms.Form):
 class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient
-        # TODO add an autocomplete to gender field
+        # TODO add an autocomplete to gender field or add select choice widget
+        """widgets = {
+          'gender' : forms.select(choices=('Male', 'Female', 'Other')),
+        }"""
         fields = ('first_name', 'last_name', 'email', 'cell_phone', 'date_of_birth', 'gender')
