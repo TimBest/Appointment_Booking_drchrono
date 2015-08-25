@@ -25,8 +25,5 @@ class ScheduleForm(forms.Form):
     appointment_date = forms.DateTimeField(input_formats=["%Y-%m-%dT%H:%M:%S"])
 
     def __init__(self, *args, **kwargs):
-        instance = kwargs.pop('instance')
+        kwargs.pop('instance')
         super(ScheduleForm, self).__init__(*args, **kwargs)
-        # TODO: schedule updates for all practices to run once a night
-        update_doctors_for_user(user=instance.user)
-        self.fields['doctor'].choices = [(d.id, str(d)) for d in instance.user.doctors.all()]

@@ -214,6 +214,7 @@ PIPELINE_JS = {
             'scripts/includes/jquery-1.11.0.min.js',
             'scripts/includes/fastclick.js',
             'scripts/includes/foundation.min.js',
+            'scripts/appointments.js',
         ),
         'output_filename': 'scripts/scripts.min.js',
         'extra_context': {

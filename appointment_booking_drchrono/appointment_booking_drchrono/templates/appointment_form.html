@@ -38,7 +38,23 @@
       <h4>Step 2 | Schedule Appointment</h4>
       {{ forms.field(DoctorOrOfficeForm.doctor) }}
       {{ forms.field(DoctorOrOfficeForm.office) }}
-      <p>TODO: an appointment select will go here.</p>
+      {{ forms.field(ScheduleForm.appointment_date) }}
+
+
+      <table class="rotate_table">
+        {% for current_date, time_slots in available_appointments.iteritems() %}
+        <tr>
+          <th>{{ current_date|date("l N j") }}</th>
+          {% for time_slot in time_slots %}
+          <td>
+            <input type="radio" name="time_slots" value="{{ time_slot }}" id="{{ current_date }}_{{ time_slot }}">
+              <label for="{{ current_date }}_{{ time_slot }}">{{ time_slot|date("h:iA") }}
+            </label>
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
       <input type="hidden" name="next" value="{{ next }}"/>
       <div>
         <button type="submit" class="button radius">Book Appointment</button>
