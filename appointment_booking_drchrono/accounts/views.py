@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.views.generic.edit import FormView
 
 from accounts.forms import PatientForm, SignupForm, LoginForm
+from accounts.models import Patient
 from utilities.views import MultipleModelFormsView
 
 
@@ -22,6 +23,18 @@ class SignupFormView(MultipleModelFormsView):
     template_name='accounts/signup.html'
     success_url = 'home'
 
+    def get_objects(self, queryset=None):
+        try:
+            patient = Patient()
+            for key, value in self.request.GET.iteritems():
+                setattr(patient, key, str(value))
+        except:
+            patient = None
+        return {
+            'PatientForm' : patient,
+            'SignupForm' : None,
+        }
+
     def forms_valid(self, forms):
         signup_form = forms['SignupForm']
         patient = forms['PatientForm'].save(commit=False)
@@ -33,6 +46,7 @@ class SignupFormView(MultipleModelFormsView):
         auth_login(self.request, user)
 
         patient.user = user
+        # TODO: query drchronoAPI to get the users ID if non is found then create a user
         patient.id = 000
         patient.save()
         return self.get_success_url()

@@ -1,4 +1,6 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 import urllib
 
@@ -41,7 +43,7 @@ class AppointmentFormView(MultipleModelFormsView):
             self.request.user.patient = patient
             self.request.user.patient.save()
         except:
-            return "%s?%s" % ((redirect('signup')), urllib.urlencode(patient.cleaned_data))
+            return HttpResponseRedirect("%s?%s" % ((reverse('signup')), urllib.urlencode(patient.cleaned_data)))
 
         return self.get_success_url()
 
