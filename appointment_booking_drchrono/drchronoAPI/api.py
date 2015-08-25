@@ -3,7 +3,9 @@ import requests, urllib
 
 API_URL = 'https://drchrono.com/api/'
 # TODO: rename user parameter to 'practice'
-
+""" TODO: move this from function based to class based
+    pass the class the user/practice and then we can use a session based requests
+"""
 """ GET """
 def drchronoAPI_get(user, parameters, endnode):
     social = user.social_auth.get(user=user)

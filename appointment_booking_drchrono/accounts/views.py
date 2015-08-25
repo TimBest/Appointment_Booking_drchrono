@@ -12,7 +12,7 @@ from utilities.views import MultipleModelFormsView
 def logout(request):
     """Logs out user"""
     auth_logout(request)
-    return redirect('/')
+    return redirect(request.GET.get('next', '/'))
 
 class SignupFormView(MultipleModelFormsView):
     form_classes = {
