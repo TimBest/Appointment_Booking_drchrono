@@ -1,4 +1,4 @@
-from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.base import TemplateView
@@ -67,13 +67,15 @@ class SignupFormView(MultipleModelFormsView):
         signup_form = forms['SignupForm']
         patient = forms['PatientForm'].save(commit=False)
 
+        password = signup_form.cleaned_data['password']
         user = User.objects.create_user(username=patient.email, email=patient.email,
-                                        password=signup_form.cleaned_data['password'])
-        user.save()
-        patient.user_id = user.id
+                                        password=password)
+        user = authenticate(username=patient.email, password=password)
+        login(self.request, user)
+
+        patient.user = user
         patient.id = 000
         patient.save()
-
         return self.get_success_url()
 
 signup = SignupFormView.as_view()
