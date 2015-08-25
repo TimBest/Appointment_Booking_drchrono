@@ -1,0 +1,14 @@
+
+
+.table-fixed-header {
+  position:relative;
+  table {
+    display: block;
+    height: 250px;
+    overflow: scroll;
+    .table-header {
+      position:absolute;
+      top:0px;
+    }
+  }
+}
