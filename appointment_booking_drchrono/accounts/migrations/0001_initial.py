@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
                 ('first_name', models.CharField(max_length=255)),
                 ('last_name', models.CharField(max_length=255)),
                 ('cell_phone', models.CharField(max_length=255)),
+                ('gender', models.CharField(default=b'f', max_length=1, choices=[(b'f', 'Female'), (b'm', 'Male'), (b'o', 'Other')])),
                 ('email', models.EmailField(max_length=254)),
             ],
         ),
