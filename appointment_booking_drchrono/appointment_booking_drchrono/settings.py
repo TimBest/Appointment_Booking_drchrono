@@ -65,9 +65,9 @@ MIDDLEWARE_CLASSES = (
     'pipeline_jinja2.middleware.MinifyHTMLMiddleware',
 )
 
-ROOT_URLCONF = 'appointments.urls'
+ROOT_URLCONF = 'appointment_booking_drchrono.urls'
 
-WSGI_APPLICATION = 'appointments.wsgi.application'
+WSGI_APPLICATION = 'appointment_booking_drchrono.wsgi.application'
 
 
 # Database
@@ -140,17 +140,17 @@ TIME_ZONE = 'UCT'
 
 USE_TZ = True
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'appointments/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'appointment_booking_drchrono/media')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
-STATIC_ROOT = os.path.join( BASE_DIR, 'appointments/staticfiles/' )
+STATIC_ROOT = os.path.join( BASE_DIR, 'appointment_booking_drchrono/staticfiles/' )
 
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join( BASE_DIR, 'appointments/static' ),
+    os.path.join( BASE_DIR, 'appointment_booking_drchrono/static' ),
 
 )
 
@@ -169,7 +169,7 @@ TEMPLATES = [
         'DIRS': [os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),],
         'APP_DIRS': True,
         'OPTIONS': {
-            'environment' : 'appointments.jinja2.environment',
+            'environment' : 'appointment_booking_drchrono.jinja2.environment',
         }
     },
 ]

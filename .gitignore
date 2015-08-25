@@ -3,7 +3,7 @@
 *.pyc
 *.pyo
 
-*appointments/appointments/media/
-*appointments/appointments/staticfiles/
+*appointment_booking_drchrono/appointment_booking_drchrono/media/
+*appointment_booking_drchrono/appointment_booking_drchrono/staticfiles/
 
 .elasticbeanstalk/

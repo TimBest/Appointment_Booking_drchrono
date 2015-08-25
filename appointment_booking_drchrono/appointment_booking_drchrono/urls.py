@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.sitemaps.views import sitemap
 
-from appointments.sitemap import StaticViewSitemap
+from appointment_booking_drchrono.sitemap import StaticViewSitemap
 
 
 sitemaps = {
