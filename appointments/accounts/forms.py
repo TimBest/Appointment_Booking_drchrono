@@ -12,6 +12,10 @@ class SignupForm(forms.Form):
         kwargs.pop('instance')
         super(SignupForm, self).__init__(*args, **kwargs)
 
+class LoginForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput(),min_length=5)
+
 class PatientForm(forms.ModelForm):
     class Meta:
         model = Patient

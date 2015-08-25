@@ -1,11 +1,13 @@
-from django.contrib.auth import authenticate, login, logout as auth_logout
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.models import User
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import FormView
 
 import urllib
 
-from accounts.forms import DoctorOrOfficeForm, PatientForm, SignupForm
+from accounts.forms import DoctorOrOfficeForm, PatientForm, SignupForm, LoginForm
 from accounts.models import Practice
 from drchronoAPI.api import add_appointment
 from utilities.views import MultipleModelFormsView
@@ -71,7 +73,7 @@ class SignupFormView(MultipleModelFormsView):
         user = User.objects.create_user(username=patient.email, email=patient.email,
                                         password=password)
         user = authenticate(username=patient.email, password=password)
-        login(self.request, user)
+        auth_login(self.request, user)
 
         patient.user = user
         patient.id = 000
@@ -79,6 +81,29 @@ class SignupFormView(MultipleModelFormsView):
         return self.get_success_url()
 
 signup = SignupFormView.as_view()
+
+class LoginView(FormView):
+    template_name = 'accounts/login.html'
+    form_class = LoginForm
+
+    # TODO: return to previous pages
+    def get_context_data(self, **kwargs):
+        context = super(LoginView, self).get_context_data(**kwargs)
+        form_class = self.get_form_class()
+        context['login_form'] = self.get_form(form_class)
+        context['next'] = self.request.GET.get('next',"/")
+        return context
+
+    def form_valid(self, form):
+        user = authenticate(username=form.cleaned_data['email'],
+                            password=form.cleaned_data['password'])
+        auth_login(self.request, user)
+        self.request.session.set_expiry(0)
+
+        redirect_to = self.request.POST.get('next', '/')
+        return HttpResponseRedirect(redirect_to)
+
+login = LoginView.as_view()
 
 class HomeView(TemplateView):
     template_name='index.html'
