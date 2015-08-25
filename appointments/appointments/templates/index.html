@@ -26,16 +26,4 @@
       </div>
     {% endfor %}
   </div>
-  <div class="row">
-    <div class="large-12 columns">
-      {% if not request.user.is_authenticated() %}
-        <div>
-          <p>Want to add online appointment booking to your practice?</p>
-          <a href="{{ url('social:begin', kwargs={'backend':'drchrono'}) }}" class="button success radius" role="button">
-            <span>Signup with drcrono</span>
-          </a>
-        </div>
-      {% endif %}
-    </div>
-  </div>
 {% endblock %}

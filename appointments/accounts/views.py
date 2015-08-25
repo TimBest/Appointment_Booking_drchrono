@@ -1,9 +1,13 @@
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.base import TemplateView
 
-from accounts.forms import DoctorOrOfficeForm, PatientForm
+import urllib
+
+from accounts.forms import DoctorOrOfficeForm, PatientForm, SignupForm
 from accounts.models import Practice
+from drchronoAPI.api import add_appointment
 from utilities.views import MultipleModelFormsView
 
 
@@ -36,16 +40,43 @@ class AppointmentFormView(MultipleModelFormsView):
         }
 
     def forms_valid(self, forms):
-        for key, form in forms.iteritems():
-            if self.request.user.is_authenticated() and hasattr(self.request.user, 'patient'):
-                # save appointment via API
-                form.save()
-            else:
-                pass
-                # TODO redirect to signup
+        patient = forms['PatientForm']
+        doctor_office = forms['DoctorOrOfficeForm']
+
+        #add_appointment(self.practice, doctor, patient, office, scheduled_time)
+
+        try:
+            self.request.user.patient = patient
+            self.request.user.patient.save()
+        except:
+            return "%s?%s" % ((redirect('signup')), urllib.urlencode(patient.cleaned_data))
+
         return self.get_success_url()
 
 appointment_form = AppointmentFormView.as_view()
+
+class SignupFormView(MultipleModelFormsView):
+    form_classes = {
+        'PatientForm' : PatientForm,
+        'SignupForm' : SignupForm,
+    }
+    template_name='accounts/signup.html'
+    success_url = 'home'
+
+    def forms_valid(self, forms):
+        signup_form = forms['SignupForm']
+        patient = forms['PatientForm'].save(commit=False)
+
+        user = User.objects.create_user(username=patient.email, email=patient.email,
+                                        password=signup_form.cleaned_data['password'])
+        user.save()
+        patient.user_id = user.id
+        patient.id = 000
+        patient.save()
+
+        return self.get_success_url()
+
+signup = SignupFormView.as_view()
 
 class HomeView(TemplateView):
     template_name='index.html'
@@ -54,6 +85,5 @@ class HomeView(TemplateView):
         context = super(HomeView, self).get_context_data(**kwargs)
         context['practices'] = Practice.objects.all()
         return context
-
 
 home = HomeView.as_view()
