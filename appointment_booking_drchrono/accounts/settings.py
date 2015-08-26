@@ -29,5 +29,4 @@ SOCIAL_AUTH_PIPELINE = (
 
 SOCIAL_AUTH_DRCHRONO_KEY  = os.environ.get('DRCHRONO_CLIENT_ID', 'Riowa6L4VwMruzpWfL1DAs0jFuf7Gsd2xP9IfFsF')
 SOCIAL_AUTH_DRCHRONO_SECRET = os.environ.get('DRCHRONO_API_SECRET', '')
-# TODO: limit scope to only whats needed
-SOCIAL_AUTH_DRCHRONO_SCOPE = []
+SOCIAL_AUTH_DRCHRONO_SCOPE = ['patients', 'user', 'calendar']
