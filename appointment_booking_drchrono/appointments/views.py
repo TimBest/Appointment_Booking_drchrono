@@ -10,9 +10,8 @@ from accounts.forms import PatientForm
 from accounts.models import Practice
 from accounts.views import SignupFormView
 from appointments.forms import AppointmentInfoForm, ScheduleForm
-from drchronoAPI.models import ExamRoom, Doctor, Office
+from drchronoAPI.models import ExamRoom
 from drchronoAPI.api import drchronoAPI
-from utilities.functions import get_object_or_None
 from utilities.views import MultipleModelFormsView
 
 
@@ -141,23 +140,4 @@ appointment_form = AppointmentFormView.as_view()
 class AppointmentCreated(SignupFormView):
     template_name='appointments/created.html'
 
-    def dispatch(self, *args, **kwargs):
-        practice_id = self.kwargs.get('practice_id', None)
-        self.practice = get_object_or_404(Practice, user_id=practice_id)
-        self.drchrono = drchronoAPI(self.practice)
-        return super(AppointmentCreated, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(AppointmentCreated, self).get_context_data(**kwargs)
-        id = self.request.GET.get('id',"")
-        number_of_days = 5
-        today = datetime.date.today()
-        end = today + datetime.timedelta(days=number_of_days)
-        appointments = self.drchrono.get_appointments({'patient': id, 'date_range': "%s/%s" % (today, end)})
-        for appointment in appointments:
-            appointment['doctor'] = get_object_or_None(Doctor, id=appointment['doctor'])
-            appointment['office'] = get_object_or_None(Office, id=appointment['office'])
-            appointment['scheduled_time'] = datetime.datetime.strptime(appointment['scheduled_time'], '%Y-%m-%dT%H:%M:%S')
-        context['appointments'] = appointments
-        return context
 appointment_created = AppointmentCreated.as_view()

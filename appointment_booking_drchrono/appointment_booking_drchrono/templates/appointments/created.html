@@ -13,7 +13,7 @@
     <hr/>
     {% if request.GET.get('signup') %}
     <p>Create an account now to make your appointment scheduleing eaiser next time.</p>
-    {{ accounts.signup(request, csrf_token, PatientForm, SignupForm, next, id) }}
+    {{ accounts.signup(request, csrf_token, PatientForm, SignupForm, next, id, doctor) }}
     {% endif %}
   </div>
 </div>

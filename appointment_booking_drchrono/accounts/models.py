@@ -27,9 +27,11 @@ class Patient(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     cell_phone = models.CharField(max_length=255)
+    doctor = models.CharField(max_length=255)
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES,
                               default=GENDER_CHOICES[0][0])
     email = models.EmailField()
+    practice = models.ForeignKey(User, related_name='online_appointment_patients')
 
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)

@@ -50,6 +50,11 @@ class drchronoAPI(object):
 
         return None
 
+    def patch_patient(self, patient, data):
+        url = self.api_url + 'patients/' + patient.id
+        self.session.patch(url, data=data)
+        return None
+
     """ POST """
     def add_appointment(self, data={}):
         url = self.api_url + 'appointments'

@@ -1,7 +1,7 @@
 {% import "utils/forms.html" as forms %}
 
 
-{% macro signup(request, csrf_token, PatientForm, SignupForm, next, id) -%}
+{% macro signup(request, csrf_token, PatientForm, SignupForm, next, id, doctor) -%}
   <form id="SignUpForm" method="post" action="{{ request.path }}" class="notificationForm">
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div class="row">
@@ -27,6 +27,7 @@
         {{ forms.field(SignupForm.password) }}
         <input type="hidden" name="next" value="{{ next }}"/>
         <input type="hidden" name="id" value="{{ id }}"/>
+        <input type="hidden" name="doctor" value="{{ doctor }}"/>
         <div>
           <button type="submit" class="button radius">Sign Up</button>
         </div>
