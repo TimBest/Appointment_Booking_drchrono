@@ -3,9 +3,23 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 
+class AppointmentProfiles(models.Model):
+    id = models.CharField(max_length=255, unique=True, primary_key=True,)
+    user = models.ForeignKey(User, related_name='appointment_profiles')
+    color = models.CharField(max_length=255, null=True)
+    duration = models.CharField(max_length=255, null=True)
+    doctor = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=255, null=True)
+    online_scheduling = models.NullBooleanField()
+    reason = models.CharField(max_length=255, null=True)
+    sort_order = models.CharField(max_length=255, null=True)
+
+    def __unicode__(self):
+        return u'%s' % (self.name)
+
 class Doctor(models.Model):
     id = models.CharField(max_length=255, unique=True, primary_key=True,)
-    user = models.ForeignKey(User, verbose_name=_('user'), related_name='doctors')
+    user = models.ForeignKey(User, related_name='doctors')
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     suffix = models.CharField(max_length=255, null=True)
@@ -25,7 +39,7 @@ class Doctor(models.Model):
 
 class Office(models.Model):
     id = models.CharField(max_length=255, unique=True, primary_key=True,)
-    user = models.ForeignKey(User, verbose_name=_('user'), related_name='offices')
+    user = models.ForeignKey(User, related_name='offices')
     doctor = models.CharField(max_length=255, null=True)
     name = models.CharField(max_length=255, null=True)
     address = models.CharField(max_length=255, null=True)
@@ -43,9 +57,19 @@ class Office(models.Model):
     def __unicode__(self):
         return u'%s' % (self.name)
 
+class ExamRoom(models.Model):
+    user = models.ForeignKey(User, related_name='all_exam_rooms')
+    office = models.ForeignKey(Office, related_name='exam_rooms')
+    index = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=255, null=True)
+    online_scheduling = models.NullBooleanField()
+
+    def __unicode__(self):
+        return u'%s' % (self.name)
+
 class Patient(models.Model):
     id = models.CharField(max_length=255, unique=True, primary_key=True,)
-    user = models.ForeignKey(User, verbose_name=_('user'), related_name='patients')
+    user = models.ForeignKey(User, related_name='patients')
     date_of_birth = models.DateField(null=True)
     doctor = models.CharField(max_length=255, null=True)
     first_name = models.CharField(max_length=255, null=True)
@@ -57,18 +81,3 @@ class Patient(models.Model):
 
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)
-
-class AppointmentProfiles(models.Model):
-    id = models.CharField(max_length=255, unique=True, primary_key=True,)
-    user = models.ForeignKey(User, verbose_name=_('user'), related_name='appointment_profiles')
-    color = models.CharField(max_length=255, null=True)
-    duration = models.CharField(max_length=255, null=True)
-    doctor = models.CharField(max_length=255, null=True)
-    name = models.CharField(max_length=255, null=True)
-    online_scheduling = models.NullBooleanField()
-    reason = models.CharField(max_length=255, null=True)
-    sort_order = models.CharField(max_length=255, null=True)
-
-
-    def __unicode__(self):
-        return u'%s' % (self.name)

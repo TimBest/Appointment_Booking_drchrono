@@ -9,6 +9,7 @@ import urllib
 from accounts.forms import PatientForm
 from accounts.models import Practice
 from appointments.forms import AppointmentInfoForm, ScheduleForm
+from drchronoAPI.models import ExamRoom
 from drchronoAPI.api import drchronoAPI
 from utilities.views import MultipleModelFormsView
 
@@ -109,13 +110,13 @@ class AppointmentFormView(MultipleModelFormsView):
                 'gender':patient_form.gender,
             })
 
-        # TODO: handle multiple users in some way
+        # TODO: handle multiple users in some way. Possibly prompt them for information to determin who they are
         patient = patient[0]
-        # Exam room set to 0 since I have not set up a model for saveing exam rooms
+        # TODO: better exam room select
         self.drchrono.add_appointment(data={
             'doctor': int(doctor),
             'office': int(office),
-            'exam_room': 0,
+            'exam_room': int(ExamRoom.objects.filter(user=self.practice.user,office=office).first().index),
             'patient': patient['id'],
             'scheduled_time': "%sT%s" % (schedule['appointment_date'].date(), schedule['appointment_date'].time()),
             'profile': int(appointment_details['profile']),

@@ -1,6 +1,6 @@
 import datetime, requests, urllib
 
-from drchronoAPI.models import AppointmentProfiles, Doctor, Office, Patient
+from drchronoAPI.models import AppointmentProfiles, Doctor, ExamRoom, Office, Patient
 
 
 class drchronoAPI(object):
@@ -64,29 +64,35 @@ class drchronoAPI(object):
         appointment_profiles = self.get_appointment_profiles(parameters)
         for profile in appointment_profiles:
             profile['user'] = self.practice.user
-            profile, created = AppointmentProfiles.objects.update_or_create(
+            AppointmentProfiles.objects.update_or_create(
                 id=profile['id'], defaults=profile,)
 
     def update_doctors_for_user(self, parameters={}):
         doctors = self.get_doctors(parameters)
         for doctor in doctors:
             doctor['user'] = self.practice.user
-            doctor, created = Doctor.objects.update_or_create(
+            Doctor.objects.update_or_create(
                 id=doctor['id'], defaults=doctor)
 
     def update_offices_for_user(self, parameters = {}):
         offices = self.get_offices(parameters)
-        for office in offices:
-            office['user'] = self.practice.user
-            office.pop('exam_rooms')
+        for o in offices:
+            o['user'] = self.practice.user
+            exam_rooms = o.pop('exam_rooms')
             # TODO: save exam rooms to seprate model
             office, created = Office.objects.update_or_create(
-                id=office['id'], defaults=office)
+                id=o['id'], defaults=o)
+            for exam_room in exam_rooms:
+                exam_room['user'] = self.practice.user
+                exam_room['office'] = office
+
+                exam_room, created = ExamRoom.objects.update_or_create(
+                    office=office, index=exam_room['index'], defaults=exam_room)
 
     def update_patients_for_user(self, parameters={}):
         patients = self.get_patients(parameters)
         for patient in patients:
             patient['date_of_birth'] = datetime.date([int(x) for x in patient['date_of_birth'].split('-')])
             patient['user'] = self.practice.user
-            patient, created = Patient.objects.update_or_create(
+            Patient.objects.update_or_create(
                 id=patient['id'], defaults=patient,)
