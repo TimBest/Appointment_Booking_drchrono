@@ -2,11 +2,11 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic.edit import FormView
 
 from accounts.forms import PatientForm, PracticeForm, SignupForm, LoginForm
-from accounts.models import Patient
+from accounts.models import Practice, Patient
 from utilities.views import MultipleModelFormsView
 
 
@@ -85,7 +85,25 @@ class PracticeProfileView(MultipleModelFormsView):
     template_name='accounts/practice_profile.html'
     success_url = 'practice_profile'
 
+    def dispatch(self, *args, **kwargs):
+        get_object_or_404(Practice, user=self.request.user)
+        return super(PracticeProfileView, self).dispatch(*args, **kwargs)
+
     def get_objects(self, queryset=None):
         return {'PracticeForm' : self.request.user.practice,}
 
 practice_profile = login_required(PracticeProfileView.as_view())
+
+class PracticeProfileView(MultipleModelFormsView):
+    form_classes = {'PatientForm' : PatientForm,}
+    template_name='accounts/patient_profile.html'
+    success_url = 'patient_profile'
+
+    def dispatch(self, *args, **kwargs):
+        get_object_or_404(Patient, user=self.request.user)
+        return super(PracticeProfileView, self).dispatch(*args, **kwargs)
+
+    def get_objects(self, queryset=None):
+        return {'PatientForm' : self.request.user.patient,}
+
+patient_profile = login_required(PracticeProfileView.as_view())

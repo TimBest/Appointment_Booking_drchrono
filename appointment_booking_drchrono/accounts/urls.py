@@ -7,4 +7,5 @@ urlpatterns = patterns('accounts.views',
     url(r'^signup/$', 'signup', name='signup'),
     url(r'^signin/$', 'login', name='login'),
     url(r'^my-practice/$', 'practice_profile', name='practice_profile'),
+    url(r'^profile/$', 'patient_profile', name='patient_profile'),
 )

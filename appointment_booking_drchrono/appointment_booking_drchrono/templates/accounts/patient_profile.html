@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% import "utils/forms.html" as forms %}
+
+{% block title %}Patient Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="large-12 columns">
+    <h4>View and Cancel Appointments</h4>
+    <hr/>
+
+    <h4>Set up Appointment reminders</h4>
+    <hr/>
+
+    <h4>Edit Contact Information</h4>
+    <form id="PatientForm" method="post" action="{{ request.path }}" class="notificationForm">
+      <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      <div class="row">
+        <div class="medium-6 columns">
+          {{ forms.field(PatientForm.first_name) }}
+        </div>
+        <div class="medium-6 columns">
+          {{ forms.field(PatientForm.last_name) }}
+        </div>
+      </div>
+      {{ forms.field(PatientForm.email) }}
+      {{ forms.field(PatientForm.cell_phone) }}
+      {{ forms.field(PatientForm.date_of_birth) }}
+      {{ forms.field(PatientForm.gender) }}
+      <input type="hidden" name="next" value="{{ next }}"/>
+      <div>
+        <button type="submit" class="button radius">Save</button>
+      </div>
+    </form>
+    <hr/>
+  </div>
+</div>
+{% endblock %}

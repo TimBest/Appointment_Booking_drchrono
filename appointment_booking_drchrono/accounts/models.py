@@ -30,3 +30,9 @@ class Patient(models.Model):
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES,
                               default=GENDER_CHOICES[0][0])
     email = models.EmailField()
+
+    def __unicode__(self):
+        return u'%s %s' % (self.first_name, self.last_name)
+
+    def get_absolute_url(self):
+        return reverse('patient_profile')
