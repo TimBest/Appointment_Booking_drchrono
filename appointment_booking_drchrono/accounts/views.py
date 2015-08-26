@@ -9,7 +9,6 @@ from accounts.models import Patient
 from utilities.views import MultipleModelFormsView
 
 
-# TODO: break this into 2 apps one for accounts and one for appointment info
 def logout(request):
     """Logs out user"""
     auth_logout(request)
