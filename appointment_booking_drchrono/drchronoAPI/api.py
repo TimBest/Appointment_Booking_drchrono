@@ -14,7 +14,7 @@ class drchronoAPI(object):
         self.session.headers.update({'Authorization': 'Bearer {0}'.format(access_token)})
 
     """ GET """
-    def drchronoAPI_get(self, parameters, endnode):
+    def get(self, parameters, endnode):
         objects = []
         url = self.api_url + endnode + '?' + urllib.urlencode(parameters)
         while url:
@@ -24,16 +24,16 @@ class drchronoAPI(object):
         return objects
 
     def get_appointments(self, parameters={}):
-        return self.drchronoAPI_get(parameters, 'appointments')
+        return self.get(parameters, 'appointments')
 
     def get_doctors(self, parameters={}):
-        return self.drchronoAPI_get(parameters, 'doctors')
+        return self.get(parameters, 'doctors')
 
     def get_offices(self, parameters={}):
-        return self.drchronoAPI_get(parameters, 'offices')
+        return self.get(parameters, 'offices')
 
     def get_patients(self, parameters={}):
-        return self.drchronoAPI_get(parameters, 'patients')
+        return self.get(parameters, 'patients')
 
     """ PATCH """
     def activate_online_scheduling(self, office):
@@ -63,70 +63,26 @@ class drchronoAPI(object):
         return None
 
     """ utils """
+    # TODO: these functions are almost identical. might be nice to have a generic update function
     def update_doctors_for_user(self, parameters={}):
         doctors = self.get_doctors(parameters)
-        for d in doctors:
+        for doctor in doctors:
+            doctor['user'] = self.practice.user
             doctor, created = Doctor.objects.update_or_create(
-                id=d['id'],
-                defaults= {
-                    'user': self.practice.user,
-                    'first_name': d['first_name'],
-                    'last_name': d['last_name'],
-                    'suffix': d['suffix'],
-                    'job_title': d['job_title'],
-                    'specialty': d['specialty'],
-                    'cell_phone': d['cell_phone'],
-                    'home_phone': d['home_phone'],
-                    'office_phone': d['office_phone'],
-                    'email': d['email'],
-                    'website': d['website'],
-                },
-            )
+                id=doctor['id'], defaults=doctor)
 
     def update_offices_for_user(self, parameters = {}):
         offices = self.get_offices(parameters)
-        for o in offices:
+        for office in offices:
+            office['user'] = self.practice.user
+            # TODO: save exam rooms to seprate model
             office, created = Office.objects.update_or_create(
-                id=o['id'],
-                defaults= {
-                    'user': self.practice.user,
-                    'online_scheduling': o['online_scheduling'],
-                    'online_timeslots': o.get('online_timeslots',''),
-                    'address': o['address'],
-                    'city': o['city'],
-                    'country': o['country'],
-                    'name': o['name'],
-                    'state': o['state'],
-                    'zip_code': o['zip_code'],
-                    'doctor': o['doctor'],
-                    'end_time': o['end_time'],
-                    'phone_number': o['phone_number'],
-                    'start_time': o['start_time'],
-                    # TODO: add exam room model
-                    #'exam_rooms': o['exam_rooms'],
-                    'id': o['id'],
-                },
-            )
+                id=office['id'], defaults=office)
 
-    def update_patients_for_user(self, last_ran=None, parameters={}):
-        if last_ran:
-            parameters['since'] = last_ran
+    def update_patients_for_user(self, parameters={}):
         patients = self.get_patients(parameters)
-        for p in patients:
-            date_of_birth = p['date_of_birth']
-            if date_of_birth:
-                year, month, day = [int(x) for x in p['date_of_birth'].split('-')]
-                date_of_birth = datetime.date(year, month, day)
-                patient, created = Patient.objects.update_or_create(
-                    id=p['id'],
-                    defaults= {
-                        'user': self.practice.user,
-                        'date_of_birth': date_of_birth,
-                        'doctor': p['doctor'],
-                        'first_name': p['first_name'],
-                        'last_name': p['last_name'],
-                        'cell_phone': p['cell_phone'],
-                        'email': p['email'],
-                        'state': p['state'],
-                    },
-                )
+        for patient in patients:
+            patient['date_of_birth'] = datetime.date([int(x) for x in patient['date_of_birth'].split('-')])
+            patient['user'] = self.practice.user
+            patient, created = Patient.objects.update_or_create(
+                id=patient['id'], defaults=patient,)

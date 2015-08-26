@@ -35,7 +35,7 @@ class Office(models.Model):
     online_timeslots = models.CharField(max_length=255, null=True)
     start_time = models.CharField(max_length=255, null=True)
     end_time = models.CharField(max_length=255, null=True)
-    exam_rooms = models.CharField(max_length=255, null=True)
+    #exam_rooms = models.CharField(max_length=255, null=True)
 
     def __unicode__(self):
         return u'%s' % (self.name)

@@ -1,9 +1,21 @@
+@import 'includes/foundation/components/global';
+
 .appointment-select {
   .appointent-headers {
+    background-color: $primary-color;
+    color: $white;
+    li {
+      padding-top: 0.625rem;
+      padding-bottom: 0.625rem;
+    }
   }
   .appointent-body {
     height: 250px;
     overflow-y: scroll;
     margin-bottom: 25px;
+    .column {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
   }
 }
