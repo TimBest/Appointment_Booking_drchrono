@@ -16,6 +16,9 @@ class Doctor(models.Model):
     office_phone = models.CharField(max_length=255, null=True)
     email = models.EmailField(null=True)
     website = models.CharField(max_length=255, null=True)
+    country = models.CharField(max_length=255, null=True)
+    npi_number = models.CharField(max_length=255, null=True)
+    group_npi_number = models.CharField(max_length=255, null=True)
 
     def __unicode__(self):
         return u'Dr %s %s' % (self.first_name, self.last_name)

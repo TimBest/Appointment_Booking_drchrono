@@ -68,6 +68,7 @@ class drchronoAPI(object):
         doctors = self.get_doctors(parameters)
         for doctor in doctors:
             doctor['user'] = self.practice.user
+            print doctor
             doctor, created = Doctor.objects.update_or_create(
                 id=doctor['id'], defaults=doctor)
 
@@ -75,6 +76,7 @@ class drchronoAPI(object):
         offices = self.get_offices(parameters)
         for office in offices:
             office['user'] = self.practice.user
+            exam_rooms = office.pop('exam_rooms')
             # TODO: save exam rooms to seprate model
             office, created = Office.objects.update_or_create(
                 id=office['id'], defaults=office)
