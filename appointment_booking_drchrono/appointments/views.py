@@ -83,20 +83,21 @@ class AppointmentFormView(MultipleModelFormsView):
 
         doctor = doctor_office['doctor']
         office = doctor_office['office']
+        gender = dict(forms['PatientForm'].fields['gender'].choices)[patient_form.gender]
 
         # search for user
         patient = get_patients(self.practice.user, parameters={
             'date_of_birth':patient_form.date_of_birth,
             'first_name':patient_form.first_name,
             'last_name':patient_form.last_name,
-            'gender':patient_form.gender,
+            'gender':gender,
         })
 
         if len(patient) == 0:
             add_patient(
                 self.practice.user, doctor=doctor,
                 date_of_birth=patient_form.date_of_birth,
-                gender=patient_form.gender, data={
+                gender=gender, data={
                     'first_name':patient_form.first_name,
                     'last_name':patient_form.last_name,
                     'cell_phone':patient_form.cell_phone,
@@ -106,7 +107,7 @@ class AppointmentFormView(MultipleModelFormsView):
                 'date_of_birth':patient_form.date_of_birth,
                 'first_name':patient_form.first_name,
                 'last_name':patient_form.last_name,
-                'gender':patient_form.gender,
+                'gender':gender,
             })
 
         # TODO: handle multiple users in some way
