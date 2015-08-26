@@ -57,3 +57,18 @@ class Patient(models.Model):
 
     def __unicode__(self):
         return u'%s %s' % (self.first_name, self.last_name)
+
+class AppointmentProfiles(models.Model):
+    id = models.CharField(max_length=255, unique=True, primary_key=True,)
+    user = models.ForeignKey(User, verbose_name=_('user'), related_name='appointment_profiles')
+    color = models.CharField(max_length=255, null=True)
+    duration = models.CharField(max_length=255, null=True)
+    doctor = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=255, null=True)
+    online_scheduling = models.NullBooleanField()
+    reason = models.CharField(max_length=255, null=True)
+    sort_order = models.CharField(max_length=255, null=True)
+
+
+    def __unicode__(self):
+        return u'%s' % (self.name)

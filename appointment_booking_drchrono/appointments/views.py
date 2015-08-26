@@ -8,14 +8,14 @@ import urllib
 
 from accounts.forms import PatientForm
 from accounts.models import Practice
-from appointments.forms import DoctorOrOfficeForm, ScheduleForm
+from appointments.forms import AppointmentInfoForm, ScheduleForm
 from drchronoAPI.api import drchronoAPI
 from utilities.views import MultipleModelFormsView
 
 
 class AppointmentFormView(MultipleModelFormsView):
     form_classes = {
-        'DoctorOrOfficeForm' : DoctorOrOfficeForm,
+        'AppointmentInfoForm' : AppointmentInfoForm,
         'PatientForm' : PatientForm,
         'ScheduleForm' : ScheduleForm,
     }
@@ -71,19 +71,19 @@ class AppointmentFormView(MultipleModelFormsView):
         if self.request.user.is_authenticated() and hasattr(self.request.user, 'patient'):
             user = self.request.user.patient
         return {
-            'DoctorOrOfficeForm' : self.practice,
+            'AppointmentInfoForm' : self.practice,
             'PatientForm' : user,
             'ScheduleForm' : None,
         }
 
     def forms_valid(self, forms):
         patient_form = forms['PatientForm'].save(commit=False)
-        doctor_office = forms['DoctorOrOfficeForm'].cleaned_data
+        appointment_details = forms['AppointmentInfoForm'].cleaned_data
         # remove ScheduleForm and just use time_slots from post
         schedule = forms['ScheduleForm'].cleaned_data
 
-        doctor = doctor_office['doctor']
-        office = doctor_office['office']
+        doctor = appointment_details['doctor']
+        office = appointment_details['office']
 
         # search for user
         patient = self.drchrono.get_patients(parameters={
@@ -112,14 +112,14 @@ class AppointmentFormView(MultipleModelFormsView):
         # TODO: handle multiple users in some way
         patient = patient[0]
         # Exam room set to 0 since I have not set up a model for saveing exam rooms
-        appointment_profiles = self.drchrono.get_appointment_profiles()
         self.drchrono.add_appointment(data={
             'doctor': int(doctor),
             'office': int(office),
             'exam_room': 0,
             'patient': patient['id'],
             'scheduled_time': "%sT%s" % (schedule['appointment_date'].date(), schedule['appointment_date'].time()),
-            'profile': int(appointment_profiles[0]['id'])
+            'profile': int(appointment_details['profile']),
+            'notes': "Booked online through http://localhost:8000/. Contact support@example.com for issues with your online booking."
         })
 
         try:

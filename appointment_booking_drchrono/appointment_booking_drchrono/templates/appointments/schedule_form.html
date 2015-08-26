@@ -27,12 +27,13 @@
       <hr/>
 
       <h4>Step 2 | Select Location</h4>
+      {{ forms.field(AppointmentInfoForm.profile) }}
       <div class="row">
         <div class="medium-6 columns">
-          {{ forms.field(DoctorOrOfficeForm.doctor) }}
+          {{ forms.field(AppointmentInfoForm.doctor) }}
         </div>
         <div class="medium-6 columns">
-          {{ forms.field(DoctorOrOfficeForm.office) }}
+          {{ forms.field(AppointmentInfoForm.office) }}
         </div>
       </div>
       <p>office/doctor information goes here.</p>

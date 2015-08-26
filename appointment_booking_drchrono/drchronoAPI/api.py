@@ -1,6 +1,6 @@
 import datetime, requests, urllib
 
-from drchronoAPI.models import Doctor, Office, Patient
+from drchronoAPI.models import AppointmentProfiles, Doctor, Office, Patient
 
 
 class drchronoAPI(object):
@@ -60,6 +60,13 @@ class drchronoAPI(object):
 
     """ utils """
     # TODO: these functions are almost identical. might be nice to have a generic update function
+    def update_appointment_profiles(self, parameters={}):
+        appointment_profiles = self.get_appointment_profiles(parameters)
+        for profile in appointment_profiles:
+            profile['user'] = self.practice.user
+            profile, created = AppointmentProfiles.objects.update_or_create(
+                id=profile['id'], defaults=profile,)
+
     def update_doctors_for_user(self, parameters={}):
         doctors = self.get_doctors(parameters)
         for doctor in doctors:
@@ -71,7 +78,7 @@ class drchronoAPI(object):
         offices = self.get_offices(parameters)
         for office in offices:
             office['user'] = self.practice.user
-            exam_rooms = office.pop('exam_rooms')
+            office.pop('exam_rooms')
             # TODO: save exam rooms to seprate model
             office, created = Office.objects.update_or_create(
                 id=office['id'], defaults=office)
