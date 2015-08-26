@@ -34,6 +34,7 @@
           {{ forms.field(PatientForm.gender) }}
           {{ forms.field(SignupForm.password) }}
           <input type="hidden" name="next" value="{{ next }}"/>
+          <input type="hidden" name="id" value="{{ id }}"/>
           <div>
             <button type="submit" class="button radius">Sign Up</button>
           </div>

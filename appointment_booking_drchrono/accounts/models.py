@@ -4,9 +4,9 @@ from django.utils.translation import ugettext as _
 
 
 GENDER_CHOICES = (
-    ('f', _('Female')),
-    ('m', _('Male')),
-    ('o', _('Other')),
+    ('Female', _('Female')),
+    ('Male', _('Male')),
+    ('Other', _('Other')),
 )
 
 class Practice(models.Model):
@@ -19,6 +19,6 @@ class Patient(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     cell_phone = models.CharField(max_length=255)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES,
+    gender = models.CharField(max_length=6, choices=GENDER_CHOICES,
                               default=GENDER_CHOICES[0][0])
     email = models.EmailField()

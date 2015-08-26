@@ -65,7 +65,6 @@ def add_appointment(user, doctor, patient, office, scheduled_time, exam_room):
 
 
     r = requests.post(url, data=data, headers=headers)
-    print r
     assert r.status_code == 201 # HTTP 201 CREATED
     return None
 

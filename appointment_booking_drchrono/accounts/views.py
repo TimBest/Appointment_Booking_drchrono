@@ -22,6 +22,11 @@ class SignupFormView(MultipleModelFormsView):
     template_name='accounts/signup.html'
     success_url = 'home'
 
+    def get_context_data(self, **kwargs):
+        context = super(SignupFormView, self).get_context_data(**kwargs)
+        context['id'] = self.request.GET.get('id',"/")
+        return context
+
     def get_objects(self, queryset=None):
         try:
             patient = Patient()
@@ -45,8 +50,8 @@ class SignupFormView(MultipleModelFormsView):
         auth_login(self.request, user)
 
         patient.user = user
-        # TODO: query drchronoAPI to get the users ID if non is found then create a user
-        patient.id = 000
+        patient.id = self.request.POST.get('id', '')
+
         patient.save()
         return self.get_success_url()
 
