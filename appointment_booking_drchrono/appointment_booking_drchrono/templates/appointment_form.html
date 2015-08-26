@@ -23,15 +23,9 @@
           {{ forms.field(PatientForm.last_name) }}
         </div>
       </div>
-      <div class="row">
-        <div class="medium-6 columns">
-          {{ forms.field(PatientForm.email) }}
-        </div>
-        <div class="medium-6 columns">
-          {{ forms.field(PatientForm.cell_phone) }}
-        </div>
-      </div>
-      {{ forms.field(PatientForm.date_of_birth, "fdatepicker") }}
+      {{ forms.field(PatientForm.email) }}
+      {{ forms.field(PatientForm.cell_phone) }}
+      {{ forms.field(PatientForm.date_of_birth) }}
       {{ forms.field(PatientForm.gender) }}
       <hr/>
 
@@ -40,23 +34,28 @@
       {{ forms.field(DoctorOrOfficeForm.office) }}
       {{ forms.field(ScheduleForm.appointment_date, "hide") }}
 
-
-      <div class="table-fixed-header">
-        <table class="rotate_table">
-          {% for current_date, time_slots in available_appointments.iteritems() %}
+      <table class="rotate_table fixed-header">
+        <thead>
           <tr>
-            <th><div class="table-header">{{ current_date|date("D, N j") }}</div></th>
-            {% for time_slot in time_slots %}
+            {% for current_date in available_appointments %}
+              <th>{{ current_date|date("D, N j") }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          {% for current_date, time_slots in available_appointments.iteritems() %}
             <td>
+            {% for time_slot in time_slots %}
               <input type="radio" name="time_slots" value="{{ current_date }}T{{ time_slot }}" id="{{ current_date }}_{{ time_slot }}">
                 <label for="{{ current_date }}_{{ time_slot }}">{{ time_slot|date("h:iA") }}
               </label>
-            </td>
             {% endfor %}
-          </tr>
+            </td>
           {% endfor %}
-        </table>
-      </div>
+          </tr>
+        </tbody>
+      </table>
       <input type="hidden" name="next" value="{{ next }}"/>
       <div>
         <button type="submit" class="button radius">Book Appointment</button>

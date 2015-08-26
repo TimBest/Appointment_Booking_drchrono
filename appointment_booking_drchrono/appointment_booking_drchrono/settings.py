@@ -215,6 +215,7 @@ PIPELINE_JS = {
             'scripts/includes/fastclick.js',
             'scripts/includes/foundation.min.js',
             'scripts/includes/foundation-datepicker.js',
+            'scripts/includes/jquery.floatThead.js',
             'scripts/appointments.js',
         ),
         'output_filename': 'scripts/scripts.min.js',
