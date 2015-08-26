@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.views.generic.edit import FormView
 
-from accounts.forms import PatientForm, SignupForm, LoginForm
+from accounts.forms import PatientForm, PracticeForm, SignupForm, LoginForm
 from accounts.models import Patient
 from utilities.views import MultipleModelFormsView
 
@@ -78,3 +79,13 @@ class LoginView(FormView):
         return HttpResponseRedirect(redirect_to)
 
 login = LoginView.as_view()
+
+class PracticeProfileView(MultipleModelFormsView):
+    form_classes = {'PracticeForm' : PracticeForm,}
+    template_name='accounts/practice_profile.html'
+    success_url = 'practice_profile'
+
+    def get_objects(self, queryset=None):
+        return {'PracticeForm' : self.request.user.practice,}
+
+practice_profile = login_required(PracticeProfileView.as_view())

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import "utils/forms.html" as forms %}
+
+{% block title %}Practice Profile{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="large-12 columns">
+      <h2>Practice Profile</h2>
+      <hr/>
+      <p>Edit the note that will appear on all appointments booked through this portal.</p>
+      <form id="PracticeForm" method="post" action="{{ request.path }}" class="notificationForm">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        {{ forms.field(PracticeForm.note) }}
+        <input type="hidden" name="next" value="{{ next }}"/>
+        <button type="submit" class="button radius">Save</button>
+      </form>
+    </div>
+  </div>
+
+
+
+{% endblock %}

@@ -98,7 +98,6 @@ class AppointmentFormView(MultipleModelFormsView):
             'last_name':patient_form.last_name,
             'gender':patient_form.gender,
         })
-
         if len(patient) == 0:
             self.drchrono.add_patient(doctor=doctor,
                 date_of_birth=patient_form.date_of_birth,
@@ -116,7 +115,6 @@ class AppointmentFormView(MultipleModelFormsView):
             })
 
         # TODO: handle multiple users in some way. Possibly prompt them for information to determin who they are
-        assert len(patient) == 1
         patient = patient[0]
         # TODO: better exam room select
         self.drchrono.add_appointment(data={
@@ -126,7 +124,7 @@ class AppointmentFormView(MultipleModelFormsView):
             'patient': patient['id'],
             'scheduled_time': "%sT%s" % (schedule['appointment_date'].date(), schedule['appointment_date'].time()),
             'profile': int(appointment_details['profile']),
-            'notes': "Booked online through http://localhost:8000/. Contact support@example.com for issues with your online booking."
+            'notes': self.practice.note,
         })
 
         try:

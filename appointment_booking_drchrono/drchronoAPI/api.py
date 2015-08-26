@@ -17,6 +17,7 @@ class drchronoAPI(object):
     def get(self, parameters, endnode):
         objects = []
         url = self.api_url + endnode + '?' + urllib.urlencode(parameters)
+        print url
         while url:
             data = self.session.get(url).json()
             objects.extend(data['results'])

@@ -25,6 +25,12 @@
           {% if request.user.is_authenticated() %}
           <div class="global-nav-right">
             <ul class="tabs">
+              {% if request.user.practice %}
+              <li class="tab-title "><a class="radius" href="{{ request.user.practice.get_absolute_url() }}">{{ request.user.practice }}</a></li>
+              {% endif %}
+              {% if request.user.patient %}
+              {#<li class="tab-title "><a class="radius" href="{{ request.user.patient.get_absolute_url() }}">{{ request.user.patient }}</a></li>#}
+              {% endif %}
               <li class="tab-title "><a class="radius" href="{{ url('logout') }}?next={{ request.path }}">logout</a></li>
             </ul>
           </div>
