@@ -132,7 +132,6 @@ class AppointmentFormView(MultipleModelFormsView):
             self.request.user.patient = patient_form
             self.request.user.patient.save()
         except:
-            # TODO: pass uasers id with this
             return HttpResponseRedirect("%s?signup=Ture&%s" % (self.get_success_url(), urllib.urlencode(patient)))
 
         return HttpResponseRedirect(self.get_success_url())

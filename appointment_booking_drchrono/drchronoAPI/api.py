@@ -91,7 +91,6 @@ class drchronoAPI(object):
         for o in offices:
             o['user'] = self.practice.user
             exam_rooms = o.pop('exam_rooms')
-            # TODO: save exam rooms to seprate model
             office, created = Office.objects.update_or_create(
                 id=o['id'], defaults=o)
             for exam_room in exam_rooms:

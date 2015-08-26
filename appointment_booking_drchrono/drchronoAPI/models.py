@@ -76,7 +76,7 @@ class Patient(models.Model):
     last_name = models.CharField(max_length=255, null=True)
     cell_phone = models.CharField(max_length=255, null=True)
     email = models.EmailField(null=True)
-    # TODO: Find out ho Washington DC is handled
+    # TODO: Find out how Washington DC is handled
     state = models.CharField(max_length=2, null=True)
 
     def __unicode__(self):

@@ -5,7 +5,7 @@ from drchronoAPI.api import drchronoAPI
 
 
 class AppointmentInfoForm(forms.Form):
-    # TODO: add a blank value
+    # TODO: add a 'any'' value
     doctor = forms.ChoiceField()
     office = forms.ChoiceField()
     profile = forms.ChoiceField(label=_("Appointment Type"))
