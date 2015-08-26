@@ -27,7 +27,7 @@
         {{ forms.field(SignupForm.password) }}
         <input type="hidden" name="next" value="{{ next }}"/>
         <input type="hidden" name="id" value="{{ id }}"/>
-        <input type="hidden" name="doctor" value="{{ doctor }}"/>
+        <input type="hidden" name="doctor" value="{{ doctor.id }}"/>
         <div>
           <button type="submit" class="button radius">Sign Up</button>
         </div>

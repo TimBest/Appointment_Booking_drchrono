@@ -42,7 +42,7 @@ class SignupFormView(MultipleModelFormsView):
         end = today + datetime.timedelta(days=number_of_days)
         appointments = self.drchrono.get_appointments({'patient': context['id'], 'date_range': "%s/%s" % (today, end)})
         for appointment in appointments:
-            appointment['doctor'] = get_object_or_None(Doctor, id=appointment['doctor'])
+            context['doctor'] = appointment['doctor'] = get_object_or_None(Doctor, id=appointment['doctor'])
             appointment['office'] = get_object_or_None(Office, id=appointment['office'])
             appointment['scheduled_time'] = datetime.datetime.strptime(appointment['scheduled_time'], '%Y-%m-%dT%H:%M:%S')
         context['appointments'] = appointments
@@ -81,7 +81,7 @@ class SignupFormView(MultipleModelFormsView):
             'cell_phone':patient.cell_phone,
             'email':patient.email,
             'gender':patient.gender,
-        }
+        })
         return self.get_success_url()
 
 signup = SignupFormView.as_view()
@@ -134,7 +134,15 @@ class PatientProfileView(MultipleModelFormsView):
     def forms_valid(self, forms):
         for key, form in forms.iteritems():
             form.save()
-
+        patient = self.request.user.patient
+        drchrono = drchronoAPI(patient.practice.practice)
+        drchrono.patch_patient(patient.id, data={
+            'first_name':patient.first_name,
+            'last_name':patient.last_name,
+            'cell_phone':patient.cell_phone,
+            'email':patient.email,
+            'gender':patient.gender,
+        })
         return self.get_success_url()
 
     def get_objects(self, queryset=None):

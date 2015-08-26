@@ -46,14 +46,15 @@ class drchronoAPI(object):
         }
         url = self.api_url + 'offices/' + office.id
 
-        self.session.patch(url, data=data)
+        session = self.session.patch(url, data=data)
+        assert session.status_code == 200
 
         return None
 
     def patch_patient(self, patient, data):
-        url = self.api_url + 'patients/' + patient.id
-        self.session.patch(url, data=data)
-        return None
+        url = self.api_url + 'patients/' + patient
+        session = self.session.patch(url, data=data)
+        assert session.status_code == 200
 
     """ POST """
     def add_appointment(self, data={}):
