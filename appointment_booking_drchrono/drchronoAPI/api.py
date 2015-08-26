@@ -58,7 +58,8 @@ class drchronoAPI(object):
         }
         url = self.api_url + 'appointments'
 
-        session = self.session.patch(url, data=data)
+        session = self.session.post(url, data=data)
+
         assert session.status_code == 201 # HTTP 201 CREATED
         return None
 
@@ -68,7 +69,6 @@ class drchronoAPI(object):
         doctors = self.get_doctors(parameters)
         for doctor in doctors:
             doctor['user'] = self.practice.user
-            print doctor
             doctor, created = Doctor.objects.update_or_create(
                 id=doctor['id'], defaults=doctor)
 

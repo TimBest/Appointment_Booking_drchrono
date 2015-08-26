@@ -109,7 +109,7 @@ class AppointmentFormView(MultipleModelFormsView):
         # TODO: handle multiple users in some way
         patient = patient[0]
         # Exam room set to 0 since I have not set up a model for saveing exam rooms
-        self.drchrono.add_appointment(doctor, patient['id'], office, schedule['appointment_date'], exam_room=0)
+        self.drchrono.add_appointment(doctor, patient['id'], office, schedule['appointment_date'], 0)
 
         try:
             patient_form.id = patient['id']
