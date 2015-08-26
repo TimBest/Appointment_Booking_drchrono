@@ -58,6 +58,17 @@ class drchronoAPI(object):
         assert session.status_code == 201 # HTTP 201 CREATED
         return None
 
+    def add_patient(self, doctor, date_of_birth, gender, data={}):
+        data.update({
+            'doctor': doctor,
+            'date_of_birth': str(date_of_birth),
+            'gender': gender,
+        })
+        url = self.api_url + 'patients'
+
+        session = self.session.post(url, data=data)
+        assert session.status_code == 201 # HTTP 201 CREATED
+        return None
     """ utils """
     # TODO: these functions are almost identical. might be nice to have a generic update function
     def update_appointment_profiles(self, parameters={}):

@@ -26,7 +26,7 @@
       {{ forms.field(PatientForm.gender) }}
       <hr/>
 
-      <h4>Step 2 | Select Location</h4>
+      <h4>Step 2 | Appointment Information</h4>
       {{ forms.field(AppointmentInfoForm.profile) }}
       <div class="row">
         <div class="medium-6 columns">
@@ -37,9 +37,7 @@
         </div>
       </div>
       <p>office/doctor information goes here.</p>
-      <hr/>
 
-      <h4>Step 3 | Select Appointment</h4>
       {{ forms.field(ScheduleForm.appointment_date, "hide") }}
 
       <div class="appointment-select text-center">

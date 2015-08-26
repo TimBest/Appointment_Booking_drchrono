@@ -8,9 +8,11 @@ import urllib
 
 from accounts.forms import PatientForm
 from accounts.models import Practice
+from accounts.views import SignupFormView
 from appointments.forms import AppointmentInfoForm, ScheduleForm
-from drchronoAPI.models import ExamRoom
+from drchronoAPI.models import ExamRoom, Doctor, Office
 from drchronoAPI.api import drchronoAPI
+from utilities.functions import get_object_or_None
 from utilities.views import MultipleModelFormsView
 
 
@@ -21,7 +23,6 @@ class AppointmentFormView(MultipleModelFormsView):
         'ScheduleForm' : ScheduleForm,
     }
     template_name='appointments/schedule_form.html'
-    success_url = 'home'
 
     def dispatch(self, *args, **kwargs):
         practice_id = self.kwargs.get('practice_id', None)
@@ -31,6 +32,7 @@ class AppointmentFormView(MultipleModelFormsView):
 
     def get_context_data(self, **kwargs):
         context = super(AppointmentFormView, self).get_context_data(**kwargs)
+        # TODO: this logic is also used in appointment created. when imporved be sure to fix appoinment created as well
         number_of_days = 5
         today = datetime.date.today()
         end = today + datetime.timedelta(days=number_of_days)
@@ -77,6 +79,9 @@ class AppointmentFormView(MultipleModelFormsView):
             'ScheduleForm' : None,
         }
 
+    def get_success_url(self):
+        return reverse('appointment_created', kwargs={'practice_id':self.practice.user.id})
+
     def forms_valid(self, forms):
         patient_form = forms['PatientForm'].save(commit=False)
         appointment_details = forms['AppointmentInfoForm'].cleaned_data
@@ -111,6 +116,7 @@ class AppointmentFormView(MultipleModelFormsView):
             })
 
         # TODO: handle multiple users in some way. Possibly prompt them for information to determin who they are
+        assert len(patient) == 1
         patient = patient[0]
         # TODO: better exam room select
         self.drchrono.add_appointment(data={
@@ -129,8 +135,32 @@ class AppointmentFormView(MultipleModelFormsView):
             self.request.user.patient.save()
         except:
             # TODO: pass uasers id with this
-            return HttpResponseRedirect("%s?%s" % ((reverse('signup')), urllib.urlencode(patient)))
+            return HttpResponseRedirect("%s?signup=Ture&%s" % (self.get_success_url(), urllib.urlencode(patient)))
 
-        return self.get_success_url()
+        return HttpResponseRedirect(self.get_success_url())
 
 appointment_form = AppointmentFormView.as_view()
+
+class AppointmentCreated(SignupFormView):
+    template_name='appointments/created.html'
+
+    def dispatch(self, *args, **kwargs):
+        practice_id = self.kwargs.get('practice_id', None)
+        self.practice = get_object_or_404(Practice, user_id=practice_id)
+        self.drchrono = drchronoAPI(self.practice)
+        return super(AppointmentCreated, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(AppointmentCreated, self).get_context_data(**kwargs)
+        id = self.request.GET.get('id',"")
+        number_of_days = 5
+        today = datetime.date.today()
+        end = today + datetime.timedelta(days=number_of_days)
+        appointments = self.drchrono.get_appointments({'patient': id, 'date_range': "%s/%s" % (today, end)})
+        for appointment in appointments:
+            appointment['doctor'] = get_object_or_None(Doctor, id=appointment['doctor'])
+            appointment['office'] = get_object_or_None(Office, id=appointment['office'])
+            appointment['scheduled_time'] = datetime.datetime.strptime(appointment['scheduled_time'], '%Y-%m-%dT%H:%M:%S')
+        context['appointments'] = appointments
+        return context
+appointment_created = AppointmentCreated.as_view()
