@@ -19,7 +19,7 @@ class AppointmentFormView(MultipleModelFormsView):
         'PatientForm' : PatientForm,
         'ScheduleForm' : ScheduleForm,
     }
-    template_name='appointment_form.html'
+    template_name='appointments/schedule_form.html'
     success_url = 'home'
 
     def dispatch(self, *args, **kwargs):
