@@ -1,7 +1,6 @@
 from django import forms
 
-from drchronoAPI.api import activate_online_scheduling
-from drchronoAPI.utils import update_doctors_for_user, update_offices_for_user
+from drchronoAPI.api import drchronoAPI
 
 
 class DoctorOrOfficeForm(forms.Form):
@@ -13,10 +12,11 @@ class DoctorOrOfficeForm(forms.Form):
         instance = kwargs.pop('instance')
         super(DoctorOrOfficeForm, self).__init__(*args, **kwargs)
         # TODO: schedule updates for all practices to run once a night
-        update_doctors_for_user(user=instance.user)
-        update_offices_for_user(user=instance.user)
+        drchrono = drchronoAPI(instance.user.practice)
+        drchrono.update_doctors_for_user()
+        drchrono.update_offices_for_user()
         for office in instance.user.offices.all():
-            activate_online_scheduling(user=instance.user, office=office)
+            drchrono.activate_online_scheduling(office=office)
         self.fields['doctor'].choices = [(d.id, d) for d in instance.user.doctors.all()]
         self.fields['office'].choices= [(o.id, o) for o in instance.user.offices.all()]
 

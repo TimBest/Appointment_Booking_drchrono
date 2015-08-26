@@ -9,7 +9,7 @@ import urllib
 from accounts.forms import PatientForm
 from accounts.models import Practice
 from appointments.forms import DoctorOrOfficeForm, ScheduleForm
-from drchronoAPI.api import add_appointment, add_patient, get_appointments, get_patients
+from drchronoAPI.api import drchronoAPI
 from utilities.views import MultipleModelFormsView
 
 
@@ -25,6 +25,7 @@ class AppointmentFormView(MultipleModelFormsView):
     def dispatch(self, *args, **kwargs):
         practice_id = self.kwargs.get('practice_id', None)
         self.practice = get_object_or_404(Practice, user_id=practice_id)
+        self.drchrono = drchronoAPI(self.practice)
         return super(AppointmentFormView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -45,8 +46,8 @@ class AppointmentFormView(MultipleModelFormsView):
             date = today + datetime.timedelta(days=days)
             available_appointments[date] = list(time_slots)
 
-        #appointments = get_appointments(self.practice.user, {'date_range': "%s/%s" % (today, end)})
-        appointments = get_appointments(self.practice.user, {'date_range':'2015-08-11/2015-08-18'})
+        #appointments = self.drchrono.get_appointments({'date_range': "%s/%s" % (today, end)})
+        appointments = self.drchrono.get_appointments({'date_range':'2015-08-11/2015-08-18'})
 
         for appointment in appointments:
             scheduled_time = datetime.datetime.strptime(appointment['scheduled_time'], '%Y-%m-%dT%H:%M:%S')
@@ -85,7 +86,7 @@ class AppointmentFormView(MultipleModelFormsView):
         office = doctor_office['office']
 
         # search for user
-        patient = get_patients(self.practice.user, parameters={
+        patient = self.drchrono.get_patients(parameters={
             'date_of_birth':patient_form.date_of_birth,
             'first_name':patient_form.first_name,
             'last_name':patient_form.last_name,
@@ -93,8 +94,7 @@ class AppointmentFormView(MultipleModelFormsView):
         })
 
         if len(patient) == 0:
-            add_patient(
-                self.practice.user, doctor=doctor,
+            self.drchrono.add_patient(doctor=doctor,
                 date_of_birth=patient_form.date_of_birth,
                 gender=patient_form.gender, data={
                     'first_name':patient_form.first_name,
@@ -102,7 +102,7 @@ class AppointmentFormView(MultipleModelFormsView):
                     'cell_phone':patient_form.cell_phone,
                     'email':patient_form.email,
                 })
-            patient = get_patients(self.practice.user, parameters={
+            patient = self.drchrono.get_patients(parameters={
                 'date_of_birth':patient_form.date_of_birth,
                 'first_name':patient_form.first_name,
                 'last_name':patient_form.last_name,
@@ -112,7 +112,7 @@ class AppointmentFormView(MultipleModelFormsView):
         # TODO: handle multiple users in some way
         patient = patient[0]
         # Exam room set to 0 since I have not set up a model for saveing exam rooms
-        add_appointment(self.practice.user, doctor, patient['id'], office, schedule['appointment_date'], exam_room=0)
+        self.drchrono.add_appointment(doctor, patient['id'], office, schedule['appointment_date'], exam_room=0)
 
         try:
             patient_form.id = patient['id']
