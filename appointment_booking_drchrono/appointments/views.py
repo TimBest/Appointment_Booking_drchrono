@@ -29,25 +29,22 @@ class AppointmentFormView(MultipleModelFormsView):
         return super(AppointmentFormView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        # TODO: fix this entire mess
         context = super(AppointmentFormView, self).get_context_data(**kwargs)
-        number_of_days = 7
-        today = datetime.date(year=2015, month=8, day=11) #datetime.date.today()
+        number_of_days = 5
+        today = datetime.date.today()
         end = today + datetime.timedelta(days=number_of_days)
 
-        # TODO: this does not need to be created each time
         start = datetime.datetime(year=2015,month=1,day=1,hour=9)
         time_slots = []
         for half_hour in range(0, 480, 30):
             time_slots.append((start + datetime.timedelta(minutes=half_hour)).time())
 
         available_appointments = OrderedDict()
-        for days in range(7):
+        for days in range(number_of_days):
             date = today + datetime.timedelta(days=days)
             available_appointments[date] = list(time_slots)
 
-        #appointments = self.drchrono.get_appointments({'date_range': "%s/%s" % (today, end)})
-        appointments = self.drchrono.get_appointments({'date_range':'2015-08-11/2015-08-18'})
+        appointments = self.drchrono.get_appointments({'date_range': "%s/%s" % (today, end)})
 
         for appointment in appointments:
             scheduled_time = datetime.datetime.strptime(appointment['scheduled_time'], '%Y-%m-%dT%H:%M:%S')

@@ -6,9 +6,6 @@
 {% block content %}
 <div class="row">
   <div class="large-12 columns">
-    <h2>Appointments</h2>
-    <hr/>
-
     <form id="AppointmentForm" method="post" action="{{ request.path }}" class="notificationForm">
       <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
       <h4>Step 1 | Contact Information</h4>
@@ -29,33 +26,47 @@
       {{ forms.field(PatientForm.gender) }}
       <hr/>
 
-      <h4>Step 2 | Schedule Appointment</h4>
-      {{ forms.field(DoctorOrOfficeForm.doctor) }}
-      {{ forms.field(DoctorOrOfficeForm.office) }}
+      <h4>Step 2 | Select Location</h4>
+      <div class="row">
+        <div class="medium-6 columns">
+          {{ forms.field(DoctorOrOfficeForm.doctor) }}
+        </div>
+        <div class="medium-6 columns">
+          {{ forms.field(DoctorOrOfficeForm.office) }}
+        </div>
+      </div>
+      <p>office/doctor information goes here.</p>
+      <hr/>
+
+      <h4>Step 3 | Select Appointment</h4>
       {{ forms.field(ScheduleForm.appointment_date, "hide") }}
 
-      <table class="rotate_table fixed-header">
-        <thead>
-          <tr>
+      <div class="appointment-select">
+        <div class="appointent-headers">
+          <ul class="small-block-grid-{{ available_appointments|length }}">
             {% for current_date in available_appointments %}
-              <th>{{ current_date|date("D, N j") }}</th>
+              <li>{{ current_date|date("D, N j") }}</li>
             {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
+          </ul>
+        </div>
+        <div class="appointent-body">
+          <ul class="small-block-grid-{{ available_appointments|length }}">
           {% for current_date, time_slots in available_appointments.iteritems() %}
-            <td>
+          <li>
+            <ul class="no-bullet">
             {% for time_slot in time_slots %}
-              <input type="radio" name="time_slots" value="{{ current_date }}T{{ time_slot }}" id="{{ current_date }}_{{ time_slot }}">
-                <label for="{{ current_date }}_{{ time_slot }}">{{ time_slot|date("h:iA") }}
-              </label>
+              <li>
+                <input type="radio" name="time_slots" value="{{ current_date }}T{{ time_slot }}" id="{{ current_date }}_{{ time_slot }}">
+                  <label for="{{ current_date }}_{{ time_slot }}">{{ time_slot|date("h:iA") }}
+                </label>
+              </li>
             {% endfor %}
-            </td>
+            </ul>
+          </li>
           {% endfor %}
-          </tr>
-        </tbody>
-      </table>
+          </ul>
+        </div>
+      </div>
       <input type="hidden" name="next" value="{{ next }}"/>
       <div>
         <button type="submit" class="button radius">Book Appointment</button>
