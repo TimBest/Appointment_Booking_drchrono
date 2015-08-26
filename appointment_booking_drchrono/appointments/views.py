@@ -53,7 +53,10 @@ class AppointmentFormView(MultipleModelFormsView):
             scheduled_time -= datetime.timedelta(minutes=scheduled_time.minute % 30)
 
             duration = appointment['duration']
-            available_appointments[scheduled_time.date()].remove((scheduled_time).time())
+            try:
+                available_appointments[scheduled_time.date()].remove((scheduled_time).time())
+            except:
+                print "%s was not found in available_appointments" % scheduled_time.date()
 
             for half_hour in range(0, duration, 30):
                 try:
@@ -109,7 +112,15 @@ class AppointmentFormView(MultipleModelFormsView):
         # TODO: handle multiple users in some way
         patient = patient[0]
         # Exam room set to 0 since I have not set up a model for saveing exam rooms
-        self.drchrono.add_appointment(doctor, patient['id'], office, schedule['appointment_date'], 0)
+        appointment_profiles = self.drchrono.get_appointment_profiles()
+        self.drchrono.add_appointment(data={
+            'doctor': int(doctor),
+            'office': int(office),
+            'exam_room': 0,
+            'patient': patient['id'],
+            'scheduled_time': "%sT%s" % (schedule['appointment_date'].date(), schedule['appointment_date'].time()),
+            'profile': int(appointment_profiles[0]['id'])
+        })
 
         try:
             patient_form.id = patient['id']

@@ -26,6 +26,9 @@ class drchronoAPI(object):
     def get_appointments(self, parameters={}):
         return self.get(parameters, 'appointments')
 
+    def get_appointment_profiles(self, parameters={}):
+        return self.get(parameters, 'appointment_profiles')
+
     def get_doctors(self, parameters={}):
         return self.get(parameters, 'doctors')
 
@@ -47,15 +50,7 @@ class drchronoAPI(object):
         return None
 
     """ POST """
-    def add_appointment(self, doctor, patient, office, scheduled_time, exam_room):
-        data = {
-            'doctor': int(doctor),
-            'duration': 30, # in minutes
-            'office': int(office),
-            'exam_room': exam_room,
-            'patient': patient,
-            'scheduled_time': "%sT%s" % (scheduled_time.date(), scheduled_time.time()),
-        }
+    def add_appointment(self, data={}):
         url = self.api_url + 'appointments'
 
         session = self.session.post(url, data=data)
